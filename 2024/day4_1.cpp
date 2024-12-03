@@ -87,37 +87,25 @@ vector <int> getNums(const string& str) {
     while(ss >> num) a.push_back(num);
     return a;
 }
-int main() {
-    vector<int> a;
-    string line;
-    long long sum = 0;
-    bool ok = true;
-    while (getline(cin, line)) {
-        string res = "";
-        for(int i = 0; i < line.length(); i++) {
-            if(i < line.length() - 4) {
-                if(line.substr(i, 4) == "do()") ok = true;
-            }
-            if(i < line.length() - 7) {
-                if(line.substr(i, 7) == "don't()") ok = false;
-            }
-            if(ok) res += line[i];
-        }
-        vector <string> s = splitString(res, "mul(");
-        if(s[0].length() == res.length()) continue;
-        for(auto xs: s) {
-            vector <string> ax = splitChar(xs, ')');
-            if(ax[0].length() == xs.length()) continue;
-            vector <string> nums = splitChar(ax[0], ',');
-            if(nums.size() == 2) {
-                if(isNumber(nums[0]) && isNumber(nums[1])) {
-                    int x = stoi(nums[0]);
-                    int y = stoi(nums[1]);
-                    sum += x * y;
-                }
-            }
-        }
 
+
+int main() {
+    string line;
+    bool ok = true;
+    long long ans = 0;
+    regex pattern(R"(mul\((\d{1,3}),(\d{1,3})\)|(do\(\))|(don't\(\)))");
+    while(getline(cin, line)) {
+        for(auto i = sregex_iterator(line.begin(), line.end(), pattern); i != sregex_iterator(); ++i) {
+            smatch match = *i;
+            if(match[3].matched || match[4].matched) {
+                ok = match[3].matched;
+            } 
+            else if(ok) {
+                int num1 = stoi(match[1].str());
+                int num2 = stoi(match[2].str());
+                ans += num1 * num2;
+            }
+        }
     }
-    cout << sum << endl;
+    cout << ans << endl;
 }
