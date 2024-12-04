@@ -1,109 +1,27 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define pb push_back
-#define mp make_pair
-// splitCharMultiple(line, {'.', '/', '*', '&'})
-vector<string> splitCharMultiple(const string& str, const vector<char>& delimiters) {
-    vector<string> tokens;
-    string token;
-    for (char ch : str) {
-        if (find(delimiters.begin(), delimiters.end(), ch) != delimiters.end()) {
-            if (!token.empty()) {
-                tokens.push_back(token);
-                token.clear();
-            }
-        } else {
-            token += ch;
-        }
-    }
-    if (!token.empty()) {
-        tokens.push_back(token);
-    }
-    return tokens;
-}
-vector<string> splitChar(const string& str, char delimiter) {
-    vector<string> tokens;
-    string token;
-    stringstream ss(str);
-    while (getline(ss, token, delimiter)) {
-        tokens.push_back(token);
-    }
-    return tokens;
-}
-// vector<vector<string>> groups = splitByEmptyLines(s);
-vector<vector<string>> splitByEmptyLines(const vector<string>& lines) {
-    vector<vector<string>> result;
-    vector<string> currentGroup;
-    for (const string& line : lines) {
-        if (line.empty()) {
-            if (!currentGroup.empty()) {
-                result.push_back(currentGroup);
-                currentGroup.clear();
-            }
-        } else {
-            currentGroup.push_back(line);
-        }
-    }
-    if (!currentGroup.empty()) {
-        result.push_back(currentGroup);
-    }
-    return result;
-}
-vector<string> splitString(const string& str, const string& delimiter) {
-    vector<string> tokens;
-    size_t start = 0, end = 0;
-    while ((end = str.find(delimiter, start)) != string::npos) {
-        tokens.push_back(str.substr(start, end - start));
-        start = end + delimiter.length();
-    }
-    tokens.push_back(str.substr(start));
-    return tokens;
-}
-bool isNumber(const string& str) {
-    return !str.empty() && all_of(str.begin(), str.end(), ::isdigit);
-}
-vector <int> getOnlyNums(const string& str) {
-    vector <string> s = splitChar(str, ' ');
-    vector <int> a;
-    for(auto xs: s) {
-        if(isNumber(xs)) a.push_back(stoi(xs));
-    }
-    return a;
-}
-
-vector<int> getOnlyNumsNegativesAllowed(const string& str) {
-    vector<string> s = splitChar(str, ' ');
-    vector<int> a;
-    for (const auto& xs : s) {
-        if(xs[0] == '-') a.push_back(-stoi(xs.substr(1, xs.length()-1)));
-        else a.push_back(stoi(xs));
-    }
-    return a;
-}
-vector <int> getNums(const string& str) {
-    stringstream ss(str);
-    vector <int> a;
-    int num;
-    while(ss >> num) a.push_back(num);
-    return a;
-}
-
 
 int main() {
     string line;
-    bool ok = true;
-    long long ans = 0;
-    regex pattern(R"(mul\((\d{1,3}),(\d{1,3})\)|(do\(\))|(don't\(\)))");
+    vector <string> s;
     while(getline(cin, line)) {
-        for(auto i = sregex_iterator(line.begin(), line.end(), pattern); i != sregex_iterator(); ++i) {
-            smatch match = *i;
-            if(match[3].matched || match[4].matched) {
-                ok = match[3].matched;
-            } 
-            else if(ok) {
-                int num1 = stoi(match[1].str());
-                int num2 = stoi(match[2].str());
-                ans += num1 * num2;
+        s.pb(line);
+    }
+    int ans = 0;
+    int n = s[0].length();
+    assert(s.size() == n);
+    int dx[] = {1,-1,0,0,1,1,-1,-1};
+    int dy[] = {0,0,1,-1,-1,1,-1,1};
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            for(int k = 0; k < 8; k++) {
+                int resx = i + 3 * dx[k];
+                int resy = j + 3 * dy[k];
+                if(resx < 0 || resy < 0) continue;
+                if(resx >= n || resy >= n) continue;
+                string t = {s[i][j], s[i + dx[k]][j + dy[k]], s[i + 2 * dx[k]][j + 2 * dy[k]], s[i + 3 * dx[k]][j + 3 * dy[k]]};
+                if(t == "XMAS") ans++;
             }
         }
     }
