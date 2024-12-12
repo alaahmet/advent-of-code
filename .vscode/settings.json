@@ -10,6 +10,7 @@
         "string": "cpp",
         "vector": "cpp",
         "compare": "cpp",
-        "cstdint": "cpp"
+        "cstdint": "cpp",
+        "cmath": "cpp"
     }
 }
