@@ -87,13 +87,49 @@ vector <int> getNums(const string& str) {
     while(ss >> num) a.push_back(num);
     return a;
 }
+int px[1000], py[1000], vx[1000], vy[1000];
+int npx[1000], npy[1000];
+int n, m;
+int robots;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     string line;
-
+    robots = 0;
     while (getline(cin, line)) {
-        
+        regex re("-?\\d+");
+        sregex_iterator next(line.begin(), line.end(), re);
+        sregex_iterator end;
+        vector<int> numbers;
+        while (next != end) {
+            smatch match = *next;
+            numbers.push_back(stoi(match.str()));
+            next++;
+        }
+        px[robots] = numbers[0];
+        py[robots] = numbers[1];
+        vx[robots] = numbers[2];
+        vy[robots] = numbers[3];
+        robots++;
     }
-
+    n = 101;
+    m = 103;
+    // n = 11;
+    // m = 7;
+    long long q1, q2, q3, q4, ans = 0;
+    for(int i = 0; i < robots; i++) {
+        vx[i] = (vx[i]+n) % n;
+        vy[i] = (vy[i]+m) % m;
+        npx[i] = px[i] + 100 * vx[i];
+        npy[i] = py[i] + 100 * vy[i];
+        npx[i] = npx[i] % n;
+        npy[i] = npy[i] % m;
+        // cout << npx[i] << " " << npy[i] << endl;
+        if(npx[i] < n / 2 && npy[i] < m / 2) q1++;
+        if(npx[i] > n / 2 && npy[i] < m / 2) q2++;
+        if(npx[i] < n / 2 && npy[i] > m / 2) q3++;
+        if(npx[i] > n / 2 && npy[i] > m / 2) q4++;
+    }
+    ans = q1 * q2 * q3 * q4;
+    cout << ans << endl;
 }
