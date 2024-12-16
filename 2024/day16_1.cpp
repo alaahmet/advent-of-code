@@ -87,12 +87,61 @@ vector <int> getNums(const string& str) {
     while(ss >> num) a.push_back(num);
     return a;
 }
-int main() {
+#define int long long
+int dx[] = {0, 1, 0, -1};
+int dy[] = {1, 0, -1, 0};
+vector <string> g;
+int n, m;
+bool valid(int x, int y) {
+    return x >= 0 && x < n && y >= 0 && y < m && g[x][y] != '#';
+}
+int dp[200][200][4];
+void dfs(int x, int y, int dir, int score) {
+    if(dp[x][y][dir] <= score) return;
+    dp[x][y][dir] = score;
+    dfs(x, y, (dir + 1) % 4, score + 1000);
+    dfs(x, y, (dir + 3) % 4, score + 1000);
+    int nx = x + dx[dir];
+    int ny = y + dy[dir];
+    if(valid(nx, ny)) {
+        dfs(nx, ny, dir, score + 1);
+    }
+}
+int32_t main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     string line;
     while (getline(cin, line)) {
-    
+        g.pb(line);
     }
+    n = g.size();
+    m = g[0].size();
+    int sx, sy, ex, ey;
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            if(g[i][j] == 'S') {
+                sx = i;
+                sy = j;
+            }
+            if(g[i][j] == 'E') {
+                ex = i;
+                ey = j;
+            }
+            for(int k = 0; k < 4; k++) {
+                dp[i][j][k] = 1e12;
+            }
+        }
+    }
+
+    dfs(sx, sy, 0, 0);
     
+    int ans = min(dp[ex][ey][0], min(dp[ex][ey][1], min(dp[ex][ey][2], dp[ex][ey][3])));
+    if(ans == 1e12) cout << -1 << endl;
+    else cout << ans << endl;
+    // for(int i = 0; i < n; i++) {
+    //     for(int j = 0; j < m; j++) {
+    //         cout << dp[i][j][0] << " ";
+    //     }
+    //     cout << endl;
+    // }
 }
