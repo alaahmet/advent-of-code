@@ -53,11 +53,9 @@ int32_t main() {
         int res = 0;
         if(sop[col] == '*') res = 1;
         for(auto x: vals) {
-            cout << x << " ";
             if(sop[col] == '*') res *= x;
             else res += x;
         }
-        cout << endl;
         ans += res;
     }
     cout << ans << endl;
